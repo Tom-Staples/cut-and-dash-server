@@ -12,9 +12,23 @@ export class UsersService {
     return users;
   }
 
-  async getSingleUser(id: string): Promise<User> {
+  async getUserById(id: string): Promise<User> {
     const user = await this.getUser(id);
     return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.userModel.findOne({
+        email: email,
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    } catch (err) {
+      throw new NotFoundException('User not found');
+    }
   }
 
   async addUser(userData: User): Promise<string> {
@@ -44,7 +58,7 @@ export class UsersService {
   async deleteUser(id: string): Promise<void> {
     const result = await this.userModel.findByIdAndDelete(id);
     if (!result) {
-      throw new NotFoundException('Could not find user');
+      throw new NotFoundException('User not found');
     }
   }
 
@@ -53,10 +67,10 @@ export class UsersService {
     try {
       user = await this.userModel.findById(id);
     } catch (err) {
-      throw new NotFoundException('Could not find user');
+      throw new NotFoundException('User not found');
     }
     if (!user) {
-      throw new NotFoundException('Could not find user');
+      throw new NotFoundException('User not found');
     }
     return user;
   }
