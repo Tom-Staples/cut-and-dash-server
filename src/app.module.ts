@@ -2,6 +2,7 @@ import { Module, Logger } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { Connection } from 'mongoose';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { Connection } from 'mongoose';
         return connection;
       },
     }),
+    UsersModule,
   ],
   controllers: [],
   providers: [],
