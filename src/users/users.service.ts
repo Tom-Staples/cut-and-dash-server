@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './users.model';
+import { CreateUserDto } from './dto/createUserDto';
+import { updateUserDto } from './dto/updateUserDto';
 
 @Injectable()
 export class UsersService {
@@ -31,7 +33,7 @@ export class UsersService {
     }
   }
 
-  async addUser(userData: User): Promise<string> {
+  async addUser(userData: CreateUserDto): Promise<string> {
     const { firstName, lastName, email, password } = userData;
     const newUser = new this.userModel({
       firstName,
@@ -43,7 +45,7 @@ export class UsersService {
     return result.id;
   }
 
-  async updateUser(id: string, userData: User): Promise<void> {
+  async updateUser(id: string, userData: updateUserDto): Promise<void> {
     const { firstName, lastName, email, password } = userData;
     const user = await this.getUser(id);
 
