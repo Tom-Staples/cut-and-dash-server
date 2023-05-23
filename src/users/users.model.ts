@@ -8,7 +8,7 @@ const reqString = {
 export const userSchema = new mongoose.Schema({
   firstName: reqString,
   lastName: reqString,
-  email: reqString,
+  email: { ...reqString, unique: true },
   password: reqString,
 });
 
