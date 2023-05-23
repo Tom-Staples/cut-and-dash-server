@@ -4,10 +4,14 @@ import { Model } from 'mongoose';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/createUserDto';
 import { updateUserDto } from './dto/updateUserDto';
+import { PasswordService } from 'src/password/password.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<User>,
+    private readonly passwordService: PasswordService,
+  ) {}
 
   async getAllUsers(): Promise<User[]> {
     const users = await this.userModel.find();
@@ -35,11 +39,12 @@ export class UsersService {
 
   async addUser(userData: CreateUserDto): Promise<string> {
     const { firstName, lastName, email, password } = userData;
+    const hashPass = await this.passwordService.hashPassword(password);
     const newUser = new this.userModel({
       firstName,
       lastName,
       email,
-      password,
+      password: hashPass,
     });
     const result = await newUser.save();
     return result.id;
@@ -52,7 +57,9 @@ export class UsersService {
     user.firstName = firstName ? firstName : user.firstName;
     user.lastName = lastName ? lastName : user.lastName;
     user.email = email ? email : user.email;
-    user.password = password ? password : user.password;
+    user.password = password
+      ? await this.passwordService.hashPassword(password)
+      : user.password;
 
     await user.save();
   }
