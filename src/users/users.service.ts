@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './users.model';
@@ -38,16 +42,26 @@ export class UsersService {
   }
 
   async addUser(userData: CreateUserDto): Promise<string> {
-    const { firstName, lastName, email, password } = userData;
-    const hashPass = await this.passwordService.hashPassword(password);
-    const newUser = new this.userModel({
-      firstName,
-      lastName,
-      email,
-      password: hashPass,
-    });
-    const result = await newUser.save();
-    return result.id;
+    try {
+      const { firstName, lastName, email, password } = userData;
+      const hashPass = await this.passwordService.hashPassword(password);
+      const newUser = new this.userModel({
+        firstName,
+        lastName,
+        email,
+        password: hashPass,
+      });
+      const result = await newUser.save();
+      return result.id;
+    } catch (err) {
+      // Unique key error - applicable for email field
+      if (err.code === 11000) {
+        throw new InternalServerErrorException(
+          'User with that email already exisits',
+        );
+      }
+      throw err;
+    }
   }
 
   async updateUser(id: string, userData: updateUserDto): Promise<void> {
