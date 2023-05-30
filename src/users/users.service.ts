@@ -8,7 +8,7 @@ import { Model } from 'mongoose';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/createUserDto';
 import { updateUserDto } from './dto/updateUserDto';
-import { PasswordService } from 'src/password/password.service';
+import { PasswordService } from '../password/password.service';
 
 @Injectable()
 export class UsersService {
