@@ -10,7 +10,7 @@ on:
     branches: ['main', 'develop']
 
 jobs:
-  build:
+  Run_Integration_Tests:
     runs-on: ubuntu-latest
     environment: dev
 
