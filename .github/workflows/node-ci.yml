@@ -11,7 +11,7 @@ on:
 
 jobs:
   Build:
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     environment: dev
 
     strategy:
